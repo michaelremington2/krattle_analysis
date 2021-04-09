@@ -1,6 +1,6 @@
 
 
-experiment_iterations = 5
+experiment_iterations = 4
 
 control_group = {
     "cycles_of_sim": 10000, 
