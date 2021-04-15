@@ -1,5 +1,5 @@
 #!/usr/bin/python
-#test
+import json
 
 experiment_iterations = 5
 
@@ -161,7 +161,9 @@ experimental_groups = {
     "experiment_2": experimental_group_2,
     "experiment_3": experimental_group_3,
 }
+def main(experimental_groups):
+    with open('owl_exp.txt', 'w') as outfile:
+        json.dump(experimental_groups, outfile)
 
 if __name__ ==  "__main__":
-    differeing_owls = run_experiments(experimental_groups_dictionary = experimental_groups, experiment_iterations = experiment_iterations)
-    differeing_owls.main()
+    main(experimental_groups)
