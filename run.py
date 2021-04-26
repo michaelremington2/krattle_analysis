@@ -37,7 +37,8 @@ control_group = {
     "snake_mutation_probability":0.01,
     "krat_reproduction_freq_per_x_cycles": 50,
     "snake_reproduction_freq_per_x_cycles": 50,
-    "mixed_preference_individuals": False
+    "mixed_preference_individuals": False,
+    "prey_competition": False
     # 1000 reproduction events
     }
 
@@ -75,7 +76,8 @@ experimental_group_1 = {
     "snake_mutation_probability":0.01,
     "krat_reproduction_freq_per_x_cycles": 50,
     "snake_reproduction_freq_per_x_cycles": 50,
-    "mixed_preference_individuals": False
+    "mixed_preference_individuals": False,
+    "prey_competition": False
     # 1000 reproduction events
     }
 
@@ -113,7 +115,8 @@ experimental_group_2 = {
     "snake_mutation_probability":0.01,
     "krat_reproduction_freq_per_x_cycles": 50,
     "snake_reproduction_freq_per_x_cycles": 50,
-    "mixed_preference_individuals": False
+    "mixed_preference_individuals": False,
+    "prey_competition": False
     # 1000 reproduction events
     }
 
@@ -151,7 +154,8 @@ experimental_group_3 = {
     "snake_mutation_probability":0.01,
     "krat_reproduction_freq_per_x_cycles": 50,
     "snake_reproduction_freq_per_x_cycles": 50,
-    "mixed_preference_individuals": False
+    "mixed_preference_individuals": False,
+    "prey_competition": False
     # 1000 reproduction events
     }
 
