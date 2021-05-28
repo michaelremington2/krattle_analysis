@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import json
 
-experiment_iterations = 5
+experiment_iterations = 1
 
 control_group = {
     "cycles_of_sim": 10000, 
@@ -28,9 +28,6 @@ control_group = {
     "snake_movement_frequency_per_x_cycles":8, # once per 8 cycles
     "owl_movement_frequency_per_x_cycles":1, # once per 8 cycles
     "owl_catch_success":0.21, #from bouskila
-    "move_preference_algorithm":False,
-    "memory_length_krat":20,
-    "memory_length_snake":20,
     "krat_mutation_std":0.15,
     "snake_mutation_std":0.15,
     "krat_mutation_probability":0.01,
@@ -67,9 +64,6 @@ experimental_group_1 = {
     "snake_movement_frequency_per_x_cycles":8, # once per 8 cycles
     "owl_movement_frequency_per_x_cycles":1, # once per 8 cycles
     "owl_catch_success":0.21, #from bouskila
-    "move_preference_algorithm":False,
-    "memory_length_krat":20,
-    "memory_length_snake":20,
     "krat_mutation_std":0.15,
     "snake_mutation_std":0.15,
     "krat_mutation_probability":0.01,
@@ -106,9 +100,6 @@ experimental_group_2 = {
     "snake_movement_frequency_per_x_cycles":8, # once per 8 cycles
     "owl_movement_frequency_per_x_cycles":1, # once per 8 cycles
     "owl_catch_success":0.21, #from bouskila
-    "move_preference_algorithm":False,
-    "memory_length_krat":20,
-    "memory_length_snake":20,
     "krat_mutation_std":0.15,
     "snake_mutation_std":0.15,
     "krat_mutation_probability":0.01,
@@ -145,9 +136,6 @@ experimental_group_3 = {
     "snake_movement_frequency_per_x_cycles":8, # once per 8 cycles
     "owl_movement_frequency_per_x_cycles":1, # once per 8 cycles
     "owl_catch_success":0.21, #from bouskila
-    "move_preference_algorithm":False,
-    "memory_length_krat":20,
-    "memory_length_snake":20,
     "krat_mutation_std":0.15,
     "snake_mutation_std":0.15,
     "krat_mutation_probability":0.01,
@@ -160,13 +148,13 @@ experimental_group_3 = {
     }
 
 experimental_groups = {
-    "control" : control_group,
-    "experiment_1": experimental_group_1,
-    "experiment_2": experimental_group_2,
-    "experiment_3": experimental_group_3,
+    "control" : control_group
+    #"experiment_1": experimental_group_1,
+    #"experiment_2": experimental_group_2,
+    #"experiment_3": experimental_group_3,
 }
 def main(experimental_groups):
-    with open('owl_exp.txt', 'w') as outfile:
+    with open('control_data_exp.txt', 'w') as outfile:
         json.dump(experimental_groups, outfile)
 
 if __name__ ==  "__main__":
