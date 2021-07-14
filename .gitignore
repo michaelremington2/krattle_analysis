@@ -131,4 +131,5 @@ dmypy.json
 ### Other 
 Data/
 owl_data/
+long_sim_data/
 owl_exp.txt
