@@ -2,9 +2,9 @@
 import json
 
 experiment_iterations = 2
-experiment_name = 'Data/seed_and_burnin_test.txt'
+experiment_name = 'Data/time_test.txt'
 
-baseline_group = {"cycles_of_sim": 1000,
+baseline_group = {"cycles_of_sim": 10000,
                  "krat_data_sample_freq": 25,
                  "snake_data_sample_freq": 25,
                  "landscape_size_x": 15,
@@ -37,38 +37,38 @@ baseline_group = {"cycles_of_sim": 1000,
                  "mixed_preference_individuals": False,
                  "prey_competition": False}
 
-# experimental_group_1 = {"cycles_of_sim": 50000,
-#                  "krat_data_sample_freq": 25,
-#                  "snake_data_sample_freq": 25,
-#                  "landscape_size_x": 15,
-#                  "landscape_size_y": 15, 
-#                  "microhabitat_open_bush_proportions": [0.5, 0.5],
-#                  "initial_snake_pop": 30,
-#                  "initial_krat_pop": 200,
-#                  "initial_owl_pop": 10,
-#                  "snake_death_probability": 0.001,
-#                  "snake_strike_success_probability_bush": 0.21,
-#                  "snake_strike_success_probability_open": 0.21,
-#                  "krat_energy_gain_bush": 12, 
-#                  "krat_energy_gain_open": 12,
-#                  "snake_energy_gain": 1500,
-#                  "krat_energy_cost": 7,
-#                  "snake_energy_cost": 14,
-#                  "krat_move_range": 20,
-#                  "snake_move_range": 20,
-#                  "owl_move_range": 20,
-#                  "krat_movement_frequency_per_x_cycles": 1,
-#                  "snake_movement_frequency_per_x_cycles": 8,
-#                  "owl_movement_frequency_per_x_cycles": 1,
-#                  "owl_catch_success": 0.21,
-#                  "krat_mutation_std": 0.15,
-#                  "snake_mutation_std": 0.15,
-#                  "krat_mutation_probability": 0.01,
-#                  "snake_mutation_probability": 0.01,
-#                  "krat_reproduction_freq_per_x_cycles": 50,
-#                  "snake_reproduction_freq_per_x_cycles": 50,
-#                  "mixed_preference_individuals": False,
-#                  "prey_competition": False}
+experimental_group_1 = {"cycles_of_sim": 10000,
+                 "krat_data_sample_freq": 25,
+                 "snake_data_sample_freq": 25,
+                 "landscape_size_x": 15,
+                 "landscape_size_y": 15, 
+                 "microhabitat_open_bush_proportions": [0.5, 0.5],
+                 "initial_snake_pop": 40,
+                 "initial_krat_pop": 200,
+                 "initial_owl_pop": 0,
+                 "snake_death_probability": 0.001,
+                 "snake_strike_success_probability_bush": 0.21,
+                 "snake_strike_success_probability_open": 0.21,
+                 "krat_energy_gain_bush": 12, 
+                 "krat_energy_gain_open": 12,
+                 "snake_energy_gain": 1500,
+                 "krat_energy_cost": 7,
+                 "snake_energy_cost": 14,
+                 "krat_move_range": 20,
+                 "snake_move_range": 20,
+                 "owl_move_range": 20,
+                 "krat_movement_frequency_per_x_cycles": 1,
+                 "snake_movement_frequency_per_x_cycles": 8,
+                 "owl_movement_frequency_per_x_cycles": 1,
+                 "owl_catch_success": 0.21,
+                 "krat_mutation_std": 0.15,
+                 "snake_mutation_std": 0.15,
+                 "krat_mutation_probability": 0.01,
+                 "snake_mutation_probability": 0.01,
+                 "krat_reproduction_freq_per_x_cycles": 50,
+                 "snake_reproduction_freq_per_x_cycles": 50,
+                 "mixed_preference_individuals": True,
+                 "prey_competition": False}
 
 # experimental_group_2 = {"cycles_of_sim": 50000,
 #                  "krat_data_sample_freq": 25,
@@ -137,8 +137,8 @@ baseline_group = {"cycles_of_sim": 1000,
 #                  "prey_competition": False}
 
 experimental_groups = {
-    "baseline" : baseline_group#,
-    # "experiment_1": experimental_group_1,
+    "baseline2" : baseline_group,
+    "experiment2_1": experimental_group_1,
     # "experiment_2": experimental_group_2,
     # "experiment_3": experimental_group_3,
 }
@@ -147,5 +147,5 @@ def main(experimental_groups, file_name):
         json.dump(experimental_groups, outfile)
 
 if __name__ ==  "__main__":
-    #uumarrty -in Data/seed_and_burnin_test.txt -out Data/ -iter 1 -burn_in 100 -seed 555
+    #uumarrty -in Data/time_test.txt -out Data/ -iter 3 -burn_in 100 -seed 555
     main(experimental_groups, experiment_name)
