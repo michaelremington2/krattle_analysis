@@ -23,4 +23,4 @@ ggplot(krat_bp,aes(x=experiment,y=avg_bp))+geom_bar(stat='identity')+ggtitle('Kr
 ## Snake
 snake_info <- total_data %>% filter(org=="snake")
 snake_bp <- snake_info %>% group_by(experiment) %>% summarise(avg_bp = mean(avg_bush_pref))
-ggplot(snake_bp,aes(x=experiment,y=avg_bp))+geom_bar(stat='identity')+ggtitle('snake AVG bush Preference')
+ggplot(snake_bp,aes(x=experiment,y=avg_bp))+geom_bar(stat='identity')+ggtitle('Snake AVG bush Preference')
