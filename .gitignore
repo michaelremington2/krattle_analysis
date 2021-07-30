@@ -134,6 +134,9 @@ Data/
 owl_data/
 long_sim_data/
 owl_exp.txt
+test/Data/
+test/totals.csv
+test/per_cycle.csv
 
 # R
 .Rproj.user
