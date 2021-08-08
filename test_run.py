@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import json
 
-experiment_iterations = 2
+experiment_iterations = 1
 experiment_name = 'Data/time_test.txt'
 
 baseline_group = {"cycles_of_sim": 10000,
