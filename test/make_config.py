@@ -3,14 +3,14 @@ import json
 import argparse
 
 
-control_group = {"cycles_of_sim": 5000,
+control_group = {"cycles_of_sim": 500000,
                  "krat_data_sample_freq": 25,
                  "snake_data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
                  "initial_snake_pop": 40,
-                 "initial_krat_pop": 200,
+                 "initial_krat_pop": 180,
                  "initial_owl_pop": 0,
                  "snake_death_probability": 0.001,
                  "snake_strike_success_probability_bush": 0.21,
@@ -36,14 +36,14 @@ control_group = {"cycles_of_sim": 5000,
                  "mixed_preference_individuals": False,
                  "prey_competition": False}
 
-experimental_group_1 = {"cycles_of_sim": 5000,
+experimental_group_1 = {"cycles_of_sim": 50000,
                  "krat_data_sample_freq": 25,
                  "snake_data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
-                 "initial_snake_pop": 30,
-                 "initial_krat_pop": 200,
+                 "initial_snake_pop": 40,
+                 "initial_krat_pop": 180,
                  "initial_owl_pop": 10,
                  "snake_death_probability": 0.001,
                  "snake_strike_success_probability_bush": 0.21,
@@ -136,8 +136,8 @@ experimental_group_3 = {"cycles_of_sim": 50000,
                  "prey_competition": False}
 
 experimental_groups = {
-    "control" : control_group,
-    "experiment_1": experimental_group_1#,
+    "control" : control_group#,
+    #"experiment_1": experimental_group_1#,
     # "experiment_2": experimental_group_2,
     # "experiment_3": experimental_group_3,
 }

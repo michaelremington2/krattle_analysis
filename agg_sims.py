@@ -9,7 +9,7 @@ import json
 
 
 class export_data_from_sims(object):
-    def __init__(self,sims, output_file_path_total, output_file_path_per_cycle=None):
+    def __init__(self,sims, output_file_path_total=None, output_file_path_per_cycle=None):
         self.sims = sims
         self.output_file_path_total = output_file_path_total
         self.output_file_path_per_cycle = output_file_path_per_cycle
@@ -77,12 +77,6 @@ class export_data_from_sims(object):
             for index, row in grouped_data.iterrows():
                 dr = [file_name, experiment, sim_number, data_type, row['cycle'], row['bush_pw']]
                 self.append_data(fp = self.output_file_path_per_cycle, d_row = dr)
-
-
-
-
-
-
 
     def append_data(self,fp,d_row):
         with open(fp, 'a') as f:
