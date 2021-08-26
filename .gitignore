@@ -137,7 +137,9 @@ owl_exp.txt
 test/Data/
 test/totals.csv
 test/per_cycle.csv
+test/
 clean_test_dir/
+pop_sizes/
 
 # R
 .Rproj.user

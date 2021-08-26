@@ -3,7 +3,7 @@ import json
 import argparse
 
 
-control_group = {"cycles_of_sim": 500000,
+control_group = {"cycles_of_sim": 50000,
                  "krat_data_sample_freq": 25,
                  "snake_data_sample_freq": 25,
                  "landscape_size_x": 15,
