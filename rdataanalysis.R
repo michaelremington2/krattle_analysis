@@ -60,6 +60,11 @@ ggplot(krat_snake, aes(x=avg_bush_pref.y, y=avg_bush_pref.x,color=experiment)) +
   xlab("Snake_avg_pref")+
   ylab("Krat_avg_pref")
 
+ggplot(krat_snake, aes(x=avg_bush_pref.x, y=avg_bush_pref.y,color=experiment)) +
+  geom_point()+
+  ylab("Snake_avg_pref")+
+  xlab("Krat_avg_pref")
+
 
 #########################
 ##### Per cycle Analysis
@@ -81,8 +86,13 @@ krat_info_per_cycle <- per_cycle %>% filter(org=="krat", experiment== "control")
 krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(avg_bush_pref))
 krat_temp <- krat_bp_per_cycle %>%
   ungroup() %>% select(c("cycle","avg_bp"))
+krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,generation) %>% summarise(avg_bp = mean(avg_bush_pref))
 #https://robjhyndman.com/hyndsight/tscharacteristics/
 krat_ts <- ts(krat_temp$avg_bp,start = min(krat_temp$cycle), end = max(krat_temp$cycle), frequency = 1)
+# frequency generations
+# mentally think of the cycle as 24 hour
+# cycles would be a pulse
+# cycle is 24 hour period
 SMA3 <- SMA(krat_ts,n=3)
 plot.ts(SMA3)
 fit <- tslm(krat_ts ~ trend)

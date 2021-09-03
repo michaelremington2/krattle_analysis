@@ -4,8 +4,7 @@ import argparse
 
 
 control_group = {"cycles_of_sim": 50000,
-                 "krat_data_sample_freq": 25,
-                 "snake_data_sample_freq": 25,
+                 "data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
@@ -37,8 +36,7 @@ control_group = {"cycles_of_sim": 50000,
                  "prey_competition": False}
 
 experimental_group_1 = {"cycles_of_sim": 50000,
-                 "krat_data_sample_freq": 25,
-                 "snake_data_sample_freq": 25,
+                 "data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
@@ -70,8 +68,7 @@ experimental_group_1 = {"cycles_of_sim": 50000,
                  "prey_competition": False}
 
 experimental_group_2 = {"cycles_of_sim": 50000,
-                 "krat_data_sample_freq": 25,
-                 "snake_data_sample_freq": 25,
+                 "data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
@@ -103,8 +100,7 @@ experimental_group_2 = {"cycles_of_sim": 50000,
                  "prey_competition": False}
 
 experimental_group_3 = {"cycles_of_sim": 50000,
-                 "krat_data_sample_freq": 10,
-                 "snake_data_sample_freq": 10,
+                 "data_sample_freq": 25,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
