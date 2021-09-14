@@ -3,13 +3,13 @@ import json
 import argparse
 
 
-control_group = {"cycles_of_sim": 50000,
-                 "data_sample_freq": 25,
+control_group = {"cycles_of_sim": 5000,
+                 "data_sample_freq": 1,
                  "landscape_size_x": 15,
                  "landscape_size_y": 15, 
                  "microhabitat_open_bush_proportions": [0.5, 0.5],
-                 "initial_snake_pop": 40,
-                 "initial_krat_pop": 180,
+                 "initial_snake_pop": 20,
+                 "initial_krat_pop": 100,
                  "initial_owl_pop": 0,
                  "snake_death_probability": 0.001,
                  "snake_strike_success_probability_bush": 0.21,

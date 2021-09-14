@@ -2,8 +2,9 @@ library(dplyr)
 library(ggplot2)
 library(forecast)
 library(TTR)
+#setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/pop_sizes/Data/")
+setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/test/Data/")
 
-setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/pop_sizes/Data/")
 ###########################
 ## Totals analysis
 ###########################
@@ -21,8 +22,8 @@ total_data <- total_data %>%
     se_bush_pref = V9
   )
 
-krat_counts <-c(60,90,120,150)
-snake_counts <-c(20,30,40,50)
+#krat_counts <-c(60,90,120,150)
+#snake_counts <-c(20,30,40,50)
 
 ## Krat
 krat_info <- total_data %>% filter(org=="krat")
@@ -70,7 +71,7 @@ ggplot(krat_snake, aes(x=avg_bush_pref.x, y=avg_bush_pref.y,color=experiment)) +
 ##### Per cycle Analysis
 #########################
 
-per_cycle <-read.csv("per_cycle.csv", header=FALSE)
+per_cycle <-read.csv("per_cycle.csv", header=TRUE)
 per_cycle <- per_cycle %>% 
   rename(
     file = V1,
@@ -83,10 +84,10 @@ per_cycle <- per_cycle %>%
 
 ## Krat
 krat_info_per_cycle <- per_cycle %>% filter(org=="krat", experiment== "control")
-krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(avg_bush_pref))
+krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(bush_pw_mean))
 krat_temp <- krat_bp_per_cycle %>%
   ungroup() %>% select(c("cycle","avg_bp"))
-krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,generation) %>% summarise(avg_bp = mean(avg_bush_pref))
+krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,generation) %>% summarise(avg_bp = mean(bush_pw_mean))
 #https://robjhyndman.com/hyndsight/tscharacteristics/
 krat_ts <- ts(krat_temp$avg_bp,start = min(krat_temp$cycle), end = max(krat_temp$cycle), frequency = 1)
 # frequency generations
