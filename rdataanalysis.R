@@ -1,68 +1,148 @@
 library(dplyr)
 library(ggplot2)
+library(ggridges)
 library(forecast)
 library(TTR)
+library(cowplot)
+library(stringr)
+library(tidyr)
+rm(list = ls())
 #setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/pop_sizes/Data/")
-setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/test/Data/")
+#setwd("/home/mremington/Documents/krattle_analysis/krattle_analysis/test/Data/")
+#setwd("/home/mremington/Documents/uumarrty_exps/pop_sizes")
+#setwd("/home/mremington/Documents/uumarrty_exps/energy_gain_pure")
+setwd("/home/mremington/Documents/uumarrty_exps/strike_exp_pure")
+##########
+## EXP Input Parameters
+##########
+
+exp1_parameters <- read.csv("exp1/Data/parameters.csv",header=TRUE)
+exp2_parameters <- read.csv("exp2/Data/parameters.csv",header=TRUE)
+exp3_parameters <- read.csv("exp3/Data/parameters.csv",header=TRUE)
+exp4_parameters <- read.csv("exp4/Data/parameters.csv",header=TRUE)
+exp5_parameters <- read.csv("exp5/Data/parameters.csv",header=TRUE)
+exp6_parameters <- read.csv("exp6/Data/parameters.csv",header=TRUE)
+parameters <- union(exp1_parameters,exp2_parameters)
+parameters <- union(parameters,exp3_parameters)
+parameters <- union(parameters,exp4_parameters)
+parameters <- union(parameters,exp5_parameters)
+parameters <- union(parameters,exp6_parameters)
 
 ###########################
 ## Totals analysis
 ###########################
-total_data <- read.csv("totals.csv",header=FALSE)
-total_data <- total_data %>% 
-  rename(
-    file = V1,
-    experiment = V2,
-    sim = V3,
-    org = V4,
-    end_cycle = V5,
-    end_gen = V6,
-    avg_bush_pref = V7,
-    std_bush_pref = V8,
-    se_bush_pref = V9
-  )
 
-#krat_counts <-c(60,90,120,150)
-#snake_counts <-c(20,30,40,50)
+# exp1exp2_total <- read.csv("control_exp1/Data/totals.csv",header=FALSE)
+# exp3exp4_total <- read.csv("exp2_exp3/Data/totals.csv",header=FALSE)
+# exp5exp6_total <- read.csv("exp4_exp5/Data/totals.csv",header=FALSE)
+exp1_total <- read.csv("exp1/Data/totals.csv",header=TRUE)
+exp2_total <- read.csv("exp2/Data/totals.csv",header=TRUE)
+exp3_total <- read.csv("exp3/Data/totals.csv",header=TRUE)
+exp4_total <- read.csv("exp4/Data/totals.csv",header=TRUE)
+exp5_total <- read.csv("exp5/Data/totals.csv",header=TRUE)
+exp6_total <- read.csv("exp6/Data/totals.csv",header=TRUE)
+total_data <- union(exp1_total,exp2_total)
+total_data <- union(total_data,exp3_total)
+total_data <- union(total_data,exp4_total)
+total_data <- union(total_data,exp5_total)
+total_data <- union(total_data,exp6_total)
+
+total_data$exp_figure_label <- str_sub(total_data$experiment,-1,-1)
+
+
+
+
+
+
+
+###
+# Experimental Groups
+###
+exp_groups <- merge(x = parameters, y = total_data, by = "sim_id", all = TRUE) %>%
+  group_by(experiment) %>%
+  summarise(krat_energy_gain_bush = max(snake_strike_success_probability_bush),
+            krat_energy_gain_open = max(snake_strike_success_probability_open)) %>%
+  # summarise(krats = max(initial_krat_pop),
+  #           snakes = max(initial_snake_pop),
+  #           owls = max(initial_owl_pop)) %>%
+  na.omit()
+######
+### Successful Sims
+######
+sim_counts <- total_data %>%
+  group_by(experiment) %>%  
+  summarise(Unique_Elements = n_distinct(sim_id))
+  
 
 ## Krat
-krat_info <- total_data %>% filter(org=="krat")
-krat_bp <- krat_info %>% group_by(experiment) %>% summarise(avg_bp = mean(avg_bush_pref),
-                                                            sd_bush_pref = sd(avg_bush_pref), 
-                                                            se_bush_pref = sd(avg_bush_pref)/sqrt(n()))
-k_anova<-aov(avg_bush_pref ~ as.factor(experiment), data = krat_info)
+krat_info <- total_data %>% filter(data_type=="krat")
+krat_bp <- krat_info %>% group_by(experiment) %>% summarise(avg_bp = mean(mean_bush_pref),
+                                                            sd_bush_pref = sd(mean_bush_pref), 
+                                                            se_bush_pref = sd(mean_bush_pref)/sqrt(n()))
+k_anova<-aov(mean_bush_pref ~ as.factor(experiment), data = krat_info)
 summary(k_anova)
 
-ggplot(krat_bp,aes(x=experiment,y=avg_bp))+
-  geom_bar(stat='identity')+
-  geom_errorbar(aes(ymin=avg_bp-sd_bush_pref, ymax=avg_bp+sd_bush_pref), width=.2,
-                position=position_dodge(.9))+
-  ggtitle('Krat AVG bush Preference')
+krat_bpw_fig<- ggplot(krat_bp,aes(x=experiment,y=avg_bp))+
+                  geom_bar(stat='identity')+
+                  geom_errorbar(aes(ymin=avg_bp-sd_bush_pref, ymax=avg_bp+sd_bush_pref), width=.2,
+                                position=position_dodge(.9))+
+                  ggtitle('Krat AVG Bush Preference')
   
 
 ## Snake
-snake_info <- total_data %>% filter(org=="snake")
-snake_bp <- snake_info %>% group_by(experiment) %>% summarise(avg_bp = mean(avg_bush_pref),
-                                                              sd_bush_pref = sd(avg_bush_pref), 
-                                                              se_bush_pref = sd(avg_bush_pref)/sqrt(n()))
-ggplot(snake_bp,aes(x=experiment,y=avg_bp))+
-  geom_bar(stat='identity')+
+snake_info <- total_data %>% filter(data_type=="snake")
+snake_bp <- snake_info %>% group_by(experiment) %>% summarise(avg_bp = mean(mean_bush_pref),
+                                                              sd_bush_pref = sd(mean_bush_pref), 
+                                                              se_bush_pref = sd(mean_bush_pref)/sqrt(n()))
+snake_bpw_fig<-ggplot(snake_bp,aes(x=experiment,y=avg_bp))+
+                      geom_bar(stat='identity')+
+                      geom_errorbar(aes(ymin=avg_bp-sd_bush_pref, ymax=avg_bp+sd_bush_pref), width=.2,
+                                    position=position_dodge(.9))+
+                      ggtitle('Snake AVG bush Preference')
+
+s_anova<-aov(mean_bush_pref ~ as.factor(experiment), data = snake_info)
+summary(s_anova)
+####
+# Totals resuts
+####
+org_info <- total_data %>% group_by(data_type,exp_figure_label) %>% summarise(avg_bp = mean(mean_bush_pref),
+                                       sd_bush_pref = sd(mean_bush_pref), 
+                                       se_bush_pref = sd(mean_bush_pref)/sqrt(n()))
+
+###########################
+#### Figure by EXP
+###########################
+
+
+ggplot(org_info,aes(fill=data_type,x=exp_figure_label,y=avg_bp))+
+  geom_bar(stat='identity',position=position_dodge(.9))+
   geom_errorbar(aes(ymin=avg_bp-sd_bush_pref, ymax=avg_bp+sd_bush_pref), width=.2,
                 position=position_dodge(.9))+
-  ggtitle('Snake AVG bush Preference')
+  scale_fill_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))+
+  ylab("Bush Preference")+
+  xlab("Experimental Group")+
+  ggtitle('Bush Preference by Organism')+
+  theme(plot.title = element_text(size = 18, face = "bold"))+
+  theme(text=element_text(size=14, face = "bold"))
 
-s_anova<-aov(avg_bush_pref ~ as.factor(experiment), data = snake_info)
-summary(s_anova)
+ggsave('/home/mremington/Documents/uumarrty_exps/figures/totals_owl_exp.png')
+
+
+
 
 # comb
-krat_snake <- merge(krat_info, snake_info, by = c("experiment", "sim"))
-ggplot(krat_snake, aes(x=avg_bush_pref.y, y=avg_bush_pref.x,color=experiment)) +
+krat_snake <- merge(krat_info, snake_info, by = c("sim_id"))
+ggplot(krat_snake, aes(x=mean_bush_pref.y, y=mean_bush_pref.x,color=experiment.x)) +
+  xlim(0,1)+
+  ylim(0,1)+
   geom_point()+
   xlab("Snake_avg_pref")+
   ylab("Krat_avg_pref")
 
-ggplot(krat_snake, aes(x=avg_bush_pref.x, y=avg_bush_pref.y,color=experiment)) +
+ggplot(krat_snake, aes(x=mean_bush_pref.x, y=mean_bush_pref.y,color=experiment.x)) +
   geom_point()+
+  xlim(0,1)+
+  ylim(0,1)+
   ylab("Snake_avg_pref")+
   xlab("Krat_avg_pref")
 
@@ -70,30 +150,56 @@ ggplot(krat_snake, aes(x=avg_bush_pref.x, y=avg_bush_pref.y,color=experiment)) +
 #########################
 ##### Per cycle Analysis
 #########################
+# exp1exp2_per_cycle <- read.csv("control_exp1/Data/per_cycle.csv",header=TRUE)
+# exp3exp4_per_cycle <- read.csv("exp2_exp3/Data/per_cycle.csv",header=TRUE)
+# exp5exp6_per_cycle <- read.csv("exp4_exp5/Data/per_cycle.csv",header=TRUE)
+exp1_per_cycle <- read.csv("exp1/Data/per_cycle.csv",header=TRUE)
+exp2_per_cycle <- read.csv("exp2/Data/per_cycle.csv",header=TRUE)
+exp3_per_cycle <- read.csv("exp3/Data/per_cycle.csv",header=TRUE)
+exp4_per_cycle <- read.csv("exp4/Data/per_cycle.csv",header=TRUE)
+exp5_per_cycle <- read.csv("exp5/Data/per_cycle.csv",header=TRUE)
+exp6_per_cycle <- read.csv("exp6/Data/per_cycle.csv",header=TRUE)
+# exp1_per_cycle_krat <- exp1_per_cycle %>% filter(org=="krat")
+# exp2_per_cycle_krat <- exp2_per_cycle %>% filter(org=="krat")
+# exp3_per_cycle_krat <- exp3_per_cycle %>% filter(org=="krat")
+# exp4_per_cycle_krat <- exp4_per_cycle %>% filter(org=="krat")
+# krat_per_cycle <- union(exp1exp2_per_cycle_krat,exp1exp2_per_cycle_krat)
+# krat_per_cycle <- union(krat_per_cycle,exp5exp6_per_cycle_krat)
 
-per_cycle <-read.csv("per_cycle.csv", header=TRUE)
-per_cycle <- per_cycle %>% 
-  rename(
-    file = V1,
-    experiment = V2,
-    sim = V3,
-    org = V4,
-    cycle = V5,
-    avg_bush_pref= V6
-  )
+
+exp1_per_cycle_1_sim <- exp1_per_cycle %>% filter(sim_number==0, cycle>=490000) %>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                       sd_bush_pref = max(bush_pw_std))
+exp2_per_cycle_1_sim <- exp2_per_cycle %>% filter(sim_number==0, cycle>=490000)%>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                      sd_bush_pref = max(bush_pw_std))
+exp3_per_cycle_1_sim <- exp3_per_cycle %>% filter(sim_number==0, cycle>=490000)%>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                      sd_bush_pref = max(bush_pw_std))
+exp4_per_cycle_1_sim <- exp4_per_cycle %>% filter(sim_number==0, cycle>=490000)%>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                      sd_bush_pref = max(bush_pw_std))
+exp5_per_cycle_1_sim <- exp5_per_cycle %>% filter(sim_number==0, cycle>=490000)%>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                      sd_bush_pref = max(bush_pw_std))
+exp6_per_cycle_1_sim <- exp6_per_cycle %>% filter(sim_number==0, cycle>=490000)%>% group_by(org,cycle) %>% summarise(avg_bp = max(bush_pw_mean),
+                                                                                                      sd_bush_pref = max(bush_pw_std))
+
+owl_sim_per_cycle <- union(exp1_per_cycle_1_sim,exp2_per_cycle_1_sim)
+owl_sim_per_cycle <- union(owl_sim_per_cycle,exp3_per_cycle_1_sim)
+owl_sim_per_cycle <- union(owl_sim_per_cycle,exp4_per_cycle_1_sim)
+owl_sim_per_cycle <- union(owl_sim_per_cycle,exp5_per_cycle_1_sim)
+owl_sim_per_cycle <- union(owl_sim_per_cycle,exp6_per_cycle_1_sim)
 
 ## Krat
-krat_info_per_cycle <- per_cycle %>% filter(org=="krat", experiment== "control")
+krat_info_per_cycle <- krat_per_cycle %>% filter(experiment== "experiment5")
 krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(bush_pw_mean))
 krat_temp <- krat_bp_per_cycle %>%
   ungroup() %>% select(c("cycle","avg_bp"))
-krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,generation) %>% summarise(avg_bp = mean(bush_pw_mean))
+krat_bp_per_cycle <- krat_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(bush_pw_mean))
 #https://robjhyndman.com/hyndsight/tscharacteristics/
-krat_ts <- ts(krat_temp$avg_bp,start = min(krat_temp$cycle), end = max(krat_temp$cycle), frequency = 1)
+krat_ts <- ts(krat_temp$avg_bp,start = min(krat_temp$cycle), end = max(krat_temp$cycle), frequency = 365)
 # frequency generations
 # mentally think of the cycle as 24 hour
 # cycles would be a pulse
 # cycle is 24 hour period
+# ggridge ridgline
+# Periodicity
 SMA3 <- SMA(krat_ts,n=3)
 plot.ts(SMA3)
 fit <- tslm(krat_ts ~ trend)
@@ -102,7 +208,9 @@ plot(myds_month)
 summary(fit)
 plot(forecast(fit, h=20))
 #plot.ts(krat_ts)
-ggplot(krat_bp_per_cycle, aes(x=cycle, y=avg_bp, group=experiment, color=experiment)) +
+#, group=experiment, color=experiment
+krat_temp <-exp2_per_cycle_krat  %>% group_by(generation) %>% summarise(avg_bp = mean(bush_pw_mean))%>% filter(cycle>=400000)
+ggplot(krat_temp, aes(x=cycle, y=avg_bp)) +
   geom_line()+ggtitle('Krat AVG bush Preference')
 
 ## Snake
@@ -110,3 +218,178 @@ snake_info_per_cycle <- per_cycle %>% filter(org=="snake", experiment== "control
 snake_bp_per_cycle <- snake_info_per_cycle %>% group_by(experiment,cycle) %>% summarise(avg_bp = mean(avg_bush_pref))
 ggplot(snake_bp_per_cycle, aes(x=cycle, y=avg_bp, group=experiment, color=experiment))+
   geom_line()+ggtitle('Snake AVG bush Preference')
+
+###
+# Stacked per cycle figures
+###
+###
+# Stacked per cycle figures
+###
+pc1<-ggplot(exp1_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("Bush Preference")+
+  #xlab("Cycle")+
+  xlab("")+
+  ggtitle('Exp1')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc1
+
+pc2<-ggplot(exp2_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("Bush Preference")+
+  xlab("")+
+  ggtitle('Exp2')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc3<-ggplot(exp3_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("Bush Preference")+
+  xlab("Cycle")+
+  ggtitle('Exp 3')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc4<-ggplot(exp4_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("")+
+  xlab("")+
+  ggtitle('Exp 4')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc5<-ggplot(exp5_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("")+
+  xlab("")+
+  ggtitle('Exp 5')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc6<-ggplot(exp6_per_cycle_1_sim, aes(x=cycle, y=avg_bp, group=org, color=org))+
+  geom_line(size=2)+
+  ylab("")+
+  xlab("Cycle")+
+  ggtitle('Exp 6')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)+
+  scale_color_manual("Organism", values = c("krat" = "#FFC20A", "snake" = "#0C7BDC"))
+
+pc1
+#ggsave('/home/mremington/Documents/uumarrty_exps/figures/single_sim_owl_exp.png')
+# can arrange plots on the grid by column as well as by row.
+plot_grid(
+  pc1,  pc4,
+  pc2,  pc5,
+  pc3,  pc6,
+  ncol = 2,
+  byrow = TRUE
+)
+ggsave('/home/mremington/Documents/uumarrty_exps/figures/sim_matrix_owl_exp.png')
+
+
+
+####
+# variance analysis
+####
+exp1_var<- exp1_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean))# %>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+exp2_var<- exp2_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean))# %>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+exp3_var<- exp3_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean))# %>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+exp4_var<- exp4_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean))# %>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+exp5_var<- exp5_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean)) #%>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+exp6_var<- exp6_per_cycle %>%
+  group_by(experiment,sim_id,org) %>%
+  summarise(var_bp = var(bush_pw_mean))# %>%
+  #pivot_wider(names_from = org, values_from = var_bp)
+
+var_analysis<- rbind(exp1_var,exp2_var,exp3_var,exp4_var,exp5_var,exp6_var)
+var_analysis$exp_figure_label <- str_sub(var_analysis$experiment,-1,-1)
+var_analysis<-var_analysis[order(var_analysis$exp_figure_label, decreasing = TRUE),]
+
+# ggplot(exp1_var, aes(x=krat)) + 
+#   geom_histogram(aes(y=..density..), colour="black", fill="white",binwidth=0.001)#+
+#   #geom_density(alpha=.2, fill="#FF6666") 
+# 
+# ggplot(exp1_var, aes(x=snake)) + 
+#   geom_histogram(aes(y=..density..), colour="black", fill="white",binwidth=0.001)+
+#   geom_density(alpha=.1, fill="#FF6666") 
+
+ggplot(var_analysis, aes(x = var_bp, y = exp_figure_label, fill = org,color=org)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "right")+
+  scale_y_discrete(limits = unique(rev(sort(var_analysis$exp_figure_label))))
+
+
+#####
+# Derivative
+####
+f1<-diff(avg_bp)
+exp1_per_cycle_derivative <- exp1_per_cycle_1_sim %>% group_by(org) %>% mutate(diff_avg_bp = (lead(avg_bp,10) - lag(avg_bp,10))/21) %>% mutate(diff_diff_avg_bp = (lead(diff_avg_bp,2) - lag(diff_avg_bp,2))/5) %>% filter(org == 'krat',cycle>=497500)
+
+
+p1<- ggplot(exp1_per_cycle_derivative, aes(x=cycle))+
+  #geom_line(aes(y = avg_bp, colour = "avg_bp")) +
+  geom_line(aes(y = diff_avg_bp, colour = "diff_avg_bp")) +
+  geom_line(aes(y = diff_diff_avg_bp, colour = "diff_diff_avg_bp"))+
+  geom_line(aes(y = 0, colour = "black")) +
+  ylab("Bush Preference")+
+  #xlab("Cycle")+
+  xlab("")+
+  ggtitle('')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(-0.1,0.1)
+
+p2<- ggplot(exp1_per_cycle_derivative, aes(x=cycle))+
+  geom_line(aes(y = avg_bp, colour = "avg_bp")) +
+  geom_line(aes(y = 0, colour = "black")) +
+  ylab("Bush Preference")+
+  #xlab("Cycle")+
+  xlab("")+
+  ggtitle('')+
+  theme(plot.title = element_text(size = 14, face = "bold"))+
+  theme(text=element_text(size=10, face = "bold"),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))+
+  ylim(0,1)
+
+plot_grid(
+  p1,  p2,
+  ncol = 2,
+  byrow = TRUE
+)
